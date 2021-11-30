@@ -1,0 +1,117 @@
+#1ère partie
+def ajout_utilisateur(f):
+    #Ajout de l'utilisateur
+    #Saisie du genre
+    genre = int(input("Saisir votre genre(1.HOMME 2.FEMME 3.PEU IMPORTE): "))
+    while genre > 3 or genre < 1:
+        genre = int(input("Saisir votre genre(1.HOMME 2.FEMME 3.PEU IMPORTE):"))
+    genre = str(genre)
+    #Saisie du pseudo
+    pseudo = input("Saisir votre pseudo:")
+    #Saisie de l'âge
+    age = int(input("Saisir votre tranche d'âge(1. ≤18 ans 2. Entre 18 ans et 25 ans 3. Plus de 25 ans):"))
+    while age > 3 or age <= 0:
+        age = int(input("Saisir votre tranche d'âge(1.≤18ans 2.Entre 18 ans et 25 ans 3. Plus de 25 ans):"))
+    age = str(age)
+    #Saisie du type de lecture
+    type_lecture = int(input("Saisir votre type_lecture (1. Science-fiction 2. Biographie 3. Horreur 4. Romance 5. Fable 6. Histoire 7. Comédie ):"))
+    while type_lecture > 3 or type_lecture <= 0:
+        type_lecture = int(input("Saisir votre type_lecture (1. Science-fiction 2. Biographie 3. Horreur 4. Romance 5. Fable 6. Histoire 7. Comédie ):"))
+    type_lecture = str(type_lecture)
+    # Ecriture dans le fichier des utilisateurs
+    f.write(pseudo + ',' + genre + ',' + age + ',' + type_lecture)
+
+
+def ajout_lecture_utilisateur(pseudo,f1,ligne):
+    #Demande des livres lus
+    L=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+    i = 0
+    continue1 = int(input("Avez-vous lu au moins un livre de la liste? (1 pour OUI et 0 pour NON)"))
+    while continue1 < 0 or continue1 > 1:
+        continue1 = int(input("Avez-vous lu au moins un livre de la liste? (1 pour OUI et 0 pour NON)"))
+    if continue1 == 1:
+        f1.write(pseudo + ',')
+    else:
+        f1.write(pseudo + '\n')
+    #Ajout des livres lus dans le fichier + demande si plus de livres lus
+    while continue1 == 1:
+        livre_lu = int(input("Quel livre avez vous lu dans la liste auparavant"))
+        while livre_lu < 1 or livre_lu > ligne:
+            livre_lu = int(input("Quel livre avez vous lu dans la liste auparavant"))
+        if livre_lu in L:
+            livre_lu = int(input("Quel livre avez vous lu dans la liste auparavant"))
+        continue1 = int(input("Avez-vous lu un autre livre de la liste? (1 pour OUI et 0 pour NON)"))
+        L[i] = livre_lu
+        livre_lu = str(livre_lu)
+        if continue1 == 1:
+            f1.write(livre_lu + ",")
+            i += 1
+        else:
+            f1.write(livre_lu + '\n')
+def suppr_lecteur():
+    #Demande + Suppression dans le premier fichier
+    with open("booksread.txt", "r+") as f1:
+        lines = f1.readlines()
+        f1.seek(0)
+        suppr = input("Quel lecteur souhaitez vous supprimer ?")
+        for line in lines:
+            if suppr not in line:
+                f1.write(line)
+        f1.truncate()
+    #Suppression dans le deuxième fichier
+    with open("readers.txt", "r+") as f:
+        lines = f.readlines()
+        f.seek(0)
+        suppr = input("Quel lecteur souhaitez vous supprimer ?")
+        for line in lines:
+            if suppr not in line:
+                f.write(line)
+        f.truncate()
+
+#2ème partie
+def add_book():
+    #Ajout d'un livre à la liste
+    f2= open("books.txt","a",encoding='utf-8')
+    add_book=input("Quel livre souhaitez-vous ajouter? ")
+    f2.write(add_book+'\n')
+
+def modif_book():
+    #Demande de la modification à apporter à la liste
+    f2 = open("books.txt", "r")
+    modif = input("Quel livre souhaitez vous modifier ?")
+    modification = input("Quel modification voulez-vous faire ? ")
+    lines = f2.readlines()
+    f2.close()
+    #Modification de la liste
+    f2 = open("books.txt", "w")
+    for line in lines:
+        if line != modif + '\n':
+            f2.write(line)
+        else:
+            f2.write(modification + '\n')
+    f2.close()
+
+def suppr_livre():
+    #Demande pour suppression dans la liste des livres
+    f2 = open("books.txt", "r")
+    suppr = input("Quel livre souhaitez vous supprimer ?")
+    lines = f2.readlines()
+    f2.close()
+    #Suppression dans la liste des livres
+    f2 = open("books.txt", "w")
+    for line in lines:
+        if line != suppr + '\n':
+            f2.write(line)
+        else:
+            i=line
+    #Suppression dans le fichier des booksread
+    f1= open("booksread.txt","r")
+    lines = f1.readlines()
+    f1.close()
+    # Suppression dans la liste des livres
+    f1= open("booksread.txt","w")
+    f1.seek(0)
+    for line in lines:
+        if i in line:
+            del(','+i)
+    f1.truncate()
