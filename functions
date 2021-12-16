@@ -28,8 +28,8 @@ def ajout_utilisateur(f,Pseudo):
 
     # Ecriture dans le fichier des utilisateurs
     f.write(pseudo + ',' + genre + ',' + age + ',' + type_lecture)
-
-
+    f.close()
+    f3.close()
 
 def ajout_lecture_utilisateur(pseudo,f1):
     #Demande des livres lus
@@ -61,6 +61,8 @@ def ajout_lecture_utilisateur(pseudo,f1):
             i += 1
         else:
             f1.write(livre_lu + '\n')
+    f.close()
+    f1.close()
 def suppr_lecteur(matrice_notation):
     #Demande + Suppression dans le premier fichier
     with open("booksread.txt", "r+") as f1:
@@ -71,6 +73,7 @@ def suppr_lecteur(matrice_notation):
             if suppr not in line:
                 f1.write(line)
         f1.truncate()
+    f1.close()
     #Suppression dans le deuxième fichier
     with open("readers.txt", "r+") as f:
         lines = f.readlines()
@@ -84,6 +87,7 @@ def suppr_lecteur(matrice_notation):
             i+=1
         del(matrice_notation[j])
         f.truncate()
+    f.close()        
 
 #2ème partie
 def add_book():
@@ -91,6 +95,7 @@ def add_book():
     f2= open("books.txt","a",encoding='utf-8')
     add_book=input("Quel livre souhaitez-vous ajouter? ")
     f2.write(add_book+'\n')
+    f2.close()
 
 def modif_book():
     #Demande de la modification à apporter à la liste
@@ -156,6 +161,7 @@ def suppr_livre(matrice_notation):
             print(T)
             f1.write(str + '\n')
     f1.close()
+    f2.close()
 
 #3ème partie
 def remplissage_matrice_notation():
@@ -183,8 +189,23 @@ def remplissage_matrice_notation():
         for i in range(0, len(T)):
             matrice_notation[cpt][i] = T[i]
         cpt += 1
+    f.close()
+    f1.close()
+    f2.close()
     return(matrice_notation)
-
+def écriture_matrice_notation(matrice_notation):
+    f=open('books.txt', 'r')
+    f1 = open('matricenotation.txt', 'w')
+    b=0
+    for line in f:
+        b += 1
+    for i in range(0,len(matrice_notation)):
+        for j in range(0,b):
+            f1.write(matrice_notation[i][j])
+        f1.write('\n')
+    f.close()
+    f1.close()
+                      
 def matrice_notation(matrice_notation):
     f = open('books.txt', 'r')
     f1 = open('readers.txt', 'r')
@@ -213,7 +234,8 @@ def matrice_notation(matrice_notation):
         print(matrice_notation)
     else:
         print("Votre pseudo n'apparraît pas dans la liste des pseudos.")
-
+    f.close()
+    f1.close()
 def matrice_recommandation(math,matrice_notation):
     f1 = open('readers.txt', 'r')
     f = open('books.txt', 'r', encoding='utf-8')
@@ -299,3 +321,5 @@ def matrice_recommandation(math,matrice_notation):
             matrice_notation[p][int(T[i])]=note
     else:
         print("Votre pseudo n'apparaît pas dans la liste.")
+    f.close()
+    f1.close()
