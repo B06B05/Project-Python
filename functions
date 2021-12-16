@@ -1,46 +1,59 @@
 #1ère partie
-def ajout_utilisateur(f):
+def ajout_utilisateur(f,Pseudo):
     #Ajout de l'utilisateur
+    f3=open("Pseudo.txt","a",encoding="utf-8")
     #Saisie du genre
     genre = int(input("Saisir votre genre(1.HOMME 2.FEMME 3.PEU IMPORTE): "))
     while genre > 3 or genre < 1:
         genre = int(input("Saisir votre genre(1.HOMME 2.FEMME 3.PEU IMPORTE):"))
     genre = str(genre)
+
     #Saisie du pseudo
     pseudo = input("Saisir votre pseudo:")
+    while len(pseudo)==0 and ' ' in pseudo or pseudo in Pseudo:
+        pseudo = input("Saisir votre pseudo:")
+    Pseudo.append(pseudo)
+    f3.write(pseudo + " ")
     #Saisie de l'âge
     age = int(input("Saisir votre tranche d'âge(1. ≤18 ans 2. Entre 18 ans et 25 ans 3. Plus de 25 ans):"))
     while age > 3 or age <= 0:
         age = int(input("Saisir votre tranche d'âge(1.≤18ans 2.Entre 18 ans et 25 ans 3. Plus de 25 ans):"))
     age = str(age)
+
     #Saisie du type de lecture
     type_lecture = int(input("Saisir votre type_lecture (1. Science-fiction 2. Biographie 3. Horreur 4. Romance 5. Fable 6. Histoire 7. Comédie ):"))
     while type_lecture > 3 or type_lecture <= 0:
         type_lecture = int(input("Saisir votre type_lecture (1. Science-fiction 2. Biographie 3. Horreur 4. Romance 5. Fable 6. Histoire 7. Comédie ):"))
     type_lecture = str(type_lecture)
+
     # Ecriture dans le fichier des utilisateurs
     f.write(pseudo + ',' + genre + ',' + age + ',' + type_lecture)
 
 
-def ajout_lecture_utilisateur(pseudo,f1,ligne):
+
+def ajout_lecture_utilisateur(pseudo,f1):
     #Demande des livres lus
-    L=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+    f=open('books.txt','r')
+    j=0
+    for line in f:
+        j += 1
+    L=[0]*j
     i = 0
-    continue1 = int(input("Avez-vous lu au moins un livre de la liste? (1 pour OUI et 0 pour NON)"))
+    continue1 = int(input("Avez-vous lu au moins un livre de la liste? (1 pour OUI et 0 pour NON): "))
     while continue1 < 0 or continue1 > 1:
-        continue1 = int(input("Avez-vous lu au moins un livre de la liste? (1 pour OUI et 0 pour NON)"))
+        continue1 = int(input("Avez-vous lu au moins un livre de la liste? (1 pour OUI et 0 pour NON): "))
     if continue1 == 1:
         f1.write(pseudo + ',')
     else:
         f1.write(pseudo + '\n')
     #Ajout des livres lus dans le fichier + demande si plus de livres lus
     while continue1 == 1:
-        livre_lu = int(input("Quel livre avez vous lu dans la liste auparavant"))
-        while livre_lu < 1 or livre_lu > ligne:
-            livre_lu = int(input("Quel livre avez vous lu dans la liste auparavant"))
+        livre_lu = int(input("Quel livre avez vous lu dans la liste auparavant? Tapez son numéro de ligne : "))
+        while livre_lu < 1 or livre_lu > j:
+            livre_lu = int(input("Quel livre avez vous lu dans la liste auparavant? Tapez son numéro de ligne : "))
         if livre_lu in L:
-            livre_lu = int(input("Quel livre avez vous lu dans la liste auparavant"))
-        continue1 = int(input("Avez-vous lu un autre livre de la liste? (1 pour OUI et 0 pour NON)"))
+            livre_lu = int(input("Quel livre avez vous lu dans la liste auparavant? Tapez son numéro de ligne : "))
+        continue1 = int(input("Avez-vous lu un autre livre de la liste? (1 pour OUI et 0 pour NON): "))
         L[i] = livre_lu
         livre_lu = str(livre_lu)
         if continue1 == 1:
@@ -48,7 +61,7 @@ def ajout_lecture_utilisateur(pseudo,f1,ligne):
             i += 1
         else:
             f1.write(livre_lu + '\n')
-def suppr_lecteur():
+def suppr_lecteur(matrice_notation):
     #Demande + Suppression dans le premier fichier
     with open("booksread.txt", "r+") as f1:
         lines = f1.readlines()
@@ -63,9 +76,13 @@ def suppr_lecteur():
         lines = f.readlines()
         f.seek(0)
         suppr = input("Quel lecteur souhaitez vous supprimer ?")
+        i=0
         for line in lines:
             if suppr not in line:
                 f.write(line)
+                j=i
+            i+=1
+        del(matrice_notation[j])
         f.truncate()
 
 #2ème partie
@@ -91,27 +108,194 @@ def modif_book():
             f2.write(modification + '\n')
     f2.close()
 
-def suppr_livre():
-    #Demande pour suppression dans la liste des livres
-    f2 = open("books.txt", "r")
+def suppr_livre(matrice_notation):
+    # Demande pour suppression dans la liste des livres
+    f2 = open("books.txt", "r", encoding='utf-8')
     suppr = input("Quel livre souhaitez vous supprimer ?")
     lines = f2.readlines()
     f2.close()
-    #Suppression dans la liste des livres
-    f2 = open("books.txt", "w")
+    # Suppression dans la liste des livres
+    f2 = open("books.txt", "w", encoding='utf-8')
+    i = 0
+    j = 0
     for line in lines:
+        j += 1
         if line != suppr + '\n':
             f2.write(line)
         else:
-            i=line
-    #Suppression dans le fichier des booksread
-    f1= open("booksread.txt","r")
+            i = j
+            f2.write("\n")
+    #Suppression dans la matrice notation de la ligne du livre
+    for j in range(0,len(matrice_notation)):
+        matrice_notation[j][i]='0'
+    # Suppression dans le fichier des booksread
+    f1 = open("booksread.txt", "r", encoding='utf-8')
     lines = f1.readlines()
     f1.close()
-    # Suppression dans la liste des livres
-    f1= open("booksread.txt","w")
+    # Suppression dans la liste des livres lus
+    f1 = open("booksread.txt", "w", encoding='utf-8')
     f1.seek(0)
     for line in lines:
-        if i in line:
-            del(','+i)
-    f1.truncate()
+        T = list(line.split(','))
+        T[-1] = T[-1].strip('\n')
+        if int(T[1]) == i and len(T) == 2:
+            f1.write(T[0] + '\n')
+        else:
+            f1.write(T[0] + ',')
+            print(T)
+            str = ''
+            for h in range(1, len(T)):
+                if int(T[h]) != i and h < len(T) - 1 and h != len(T) - 2:
+                    str = str + T[h] + ','
+                elif int(T[h]) != i and h == len(T) - 2 and int(T[h + 1]) == i:
+                    str = str + T[h]
+                elif int(T[h]) != i and h == len(T) - 2 and int(T[h + 1]) != i:
+                    str = str + T[h] + ','
+                elif int(T[h]) != i and h == len(T) - 1:
+                    str = str + T[h]
+            print(T)
+            f1.write(str + '\n')
+    f1.close()
+
+#3ème partie
+def remplissage_matrice_notation():
+    #Création de la matrice notation
+    f = open('books.txt', 'r')
+    f1 = open('readers.txt', 'r')
+    f2 = open('matricenotation.txt', 'r')
+    i = 0
+    j = 0
+    Pseudo = False
+    matrice_notation = []
+    for line in f:
+        j += 1
+    for line in f1:
+        i += 1
+    for C in range(0, i):
+        Eval = [0] * j
+        matrice_notation.append(Eval)
+    lines = f2.readlines()
+    cpt = 0
+    #Remplissage des valeurs déjà donnée dans le fichier matrice notation
+    for line in lines:
+        T = list(line.split(' '))
+        T[-1] = T[-1].strip('\n')
+        for i in range(0, len(T)):
+            matrice_notation[cpt][i] = T[i]
+        cpt += 1
+    return(matrice_notation)
+
+def matrice_notation(matrice_notation):
+    f = open('books.txt', 'r')
+    f1 = open('readers.txt', 'r')
+    p = 0
+    Pseudo = False
+    #Demande du pseudo et récupération de son rang
+    pseudo = input("Saisir votre pseudo pour mettre les notes: ")
+    f1.seek(0)
+    lines = f1.readlines()
+    for line in lines:
+        T = list(line.split(','))
+        T[-1] = T[-1].strip('\n')
+        if T[0] == pseudo:
+            Pseudo = True
+            break
+        else:
+            p += 1
+    #Ajout des notes pour chaque livre
+    if Pseudo == True:
+        for i in range(1, len(T)):
+            k = int(T[i]) - 1
+            note = int(input("Saisir votre note pour le livre: "))
+            while note < 0 or note > 5:
+                note = int(input("Veuillez resaisir votre note pour le livre: "))
+            matrice_notation[p][k] = note
+        print(matrice_notation)
+    else:
+        print("Votre pseudo n'apparraît pas dans la liste des pseudos.")
+
+def matrice_recommandation(math,matrice_notation):
+    f1 = open('readers.txt', 'r')
+    f = open('books.txt', 'r', encoding='utf-8')
+    #Création de la matrice recommandation
+    matrice_recommandation = []
+    Note = []
+    i = 0
+    b = 0
+    for line in f1:
+        i += 1
+    for line in f:
+        b += 1
+    for C in range(0, i):
+        nb_user = [0] * i
+        matrice_recommandation.append(nb_user)
+    ai = 0
+    bi = 0
+    recommandation = 0
+    cpt = 0
+    somme_ai_bi = 0
+    #Calcul de la matrice recommandation
+    for j in range(0, len(matrice_recommandation)):
+        for l in range(0, b):
+            ai = ai + int(matrice_notation[j][l]) ** 2
+        print(ai)
+        for i in range(0, len(matrice_recommandation)):
+            for m in range(0, b):
+                bi = bi + int(matrice_notation[i][m]) ** 2
+                somme_ai_bi = somme_ai_bi + (int(matrice_notation[j][m]) * int(matrice_notation[i][m]))
+            print(bi)
+            print(somme_ai_bi)
+            recommandation1 = somme_ai_bi / (sqrt(bi) * sqrt(ai))
+            recommandation = round(recommandation1, 2)
+            matrice_recommandation[j][i] = recommandation
+            somme_ai_bi = 0
+            bi = 0
+            cpt += 1
+        cpt = j + 1
+        ai = 0
+    #Demande du pseudo et recherche du plus gros taux de ressemblance
+    pseudo = input("Saisir votre pseudo pour trouver les livres qui vous sont suggérer: ")
+    f1.seek(0)
+    lines = f1.readlines()
+    p = 0
+    Pseudo = False
+    for line in lines:
+        T = list(line.split(','))
+        T[-1] = T[-1].strip('\n')
+        if T[0] == pseudo:
+            Pseudo = True
+            break
+        else:
+            p += 1
+    if Pseudo == True:
+        max = 0
+        j = 0
+        T = []
+        for i in range(0, len(matrice_recommandation)):
+            if float(matrice_recommandation[p][i]) > max:
+                max = float(matrice_recommandation[p][i])
+                j = i
+        for i in range(0, b):
+            if int(matrice_notation[j][i]) != 0 and int(matrice_notation[p][i]) == 0:
+                T.append(i + 1)
+        f.seek(0)
+        lines = f.readlines()
+        #Présentation des recommandations de livre 
+        print("Nous vous conseillons ces livres:")
+        cpt = 1
+        for i in range(0, len(T)):
+            for line in lines:
+                if cpt == int(T[i]):
+                    print(line)
+                    cpt += 1
+                else:
+                    cpt += 1
+            cpt = 1
+        #Demande de notation si la personne a lu les livres
+        for i in range(len(T)):
+            note=int(input("Avez vous lu l'un des ces livres(à prendre dans l'ordre d'apparition)? Mettez 0 si vous ne l'avez pas lu sinon mettre une note entre 1 et 5"))
+            while note<0  or note>5:
+                note=int(input("Avez vous lu l'un des ces livres? Mettez 0 si vous ne l'avez pas lu sinon mettre une note entre 1 et 5"))
+            matrice_notation[p][int(T[i])]=note
+    else:
+        print("Votre pseudo n'apparaît pas dans la liste.")
